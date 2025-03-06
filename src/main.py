@@ -19,7 +19,7 @@ from strategies.moving_average import getMovingAverageTradeStrategy
 from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
-
+from strategies.ema_macd_strategy import getEMAMACDTradeStrategy
 # fmt: off
 # -------------------------------------------------------------------------------------------------
 # 🟢🟢🟢 CONFIGURAÇÕES - PODEM ALTERAR - INICIO 🟢🟢🟢
@@ -29,13 +29,22 @@ from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 
 # 🏆 ESTRATÉGIA PRINCIPAL 🏆
 
-MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
-MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, # Interfere na antecipação e nos lances de compra de venda limitados 
-                      "fast_window": 7,
-                      "slow_window": 21}
+# MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
+# MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, # Interfere na antecipação e nos lances de compra de venda limitados 
+#                       "fast_window": 7,
+#                       "slow_window": 21}
 
-# MAIN_STRATEGY = getVortexTradeStrategy
-# MAIN_STRATEGY_ARGS = {}
+MAIN_STRATEGY = getEMAMACDTradeStrategy
+MAIN_STRATEGY_ARGS = {
+    "verbose": False,
+    "ema_fast_period": 7,
+    "ema_slow_period": 25,
+    "macd_fast_period": 12,
+    "macd_slow_period": 26,
+    "signal_window": 9,
+    "long_window": 99
+}
+
 
 # MAIN_STRATEGY = getVortexTradeStrategy
 # MAIN_STRATEGY_ARGS = {}
@@ -57,7 +66,7 @@ MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, # Interfere na antecipação e n
 # 🥈 ESTRATÉGIA DE FALLBACK (reserva) 🥈
 
 FALLBACK_ACTIVATED  = True      
-FALLBACK_STRATEGY = getMovingAverageTradeStrategy
+FALLBACK_STRATEGY = getVortexTradeStrategy
 FALLBACK_STRATEGY_ARGS = {}
 
 # ------------------------------------------------------------------
@@ -87,7 +96,7 @@ DELAY_ENTRE_ORDENS          = 60 * 60           # Tempo que o bot espera depois 
 
 XRP_USDT = StockStartModel(  stockCode = "XRP",
                             operationCode = "XRPUSDT",
-                            tradedQuantity = 3,
+                            tradedQuantity = 0,
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
                             candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE, tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS, acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE, fallBackActivated= FALLBACK_ACTIVATED, takeProfitAtPercentage=TP_AT_PERCENTAGE, takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE)
 
@@ -97,13 +106,13 @@ SOL_USDT = StockStartModel(  stockCode = "SOL",
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
                             candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE, tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS, acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE, fallBackActivated= FALLBACK_ACTIVATED, takeProfitAtPercentage=TP_AT_PERCENTAGE, takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE)
 
-ADA_USDT = StockStartModel(  stockCode = "ADA",
-                            operationCode = "ADAUSDT",
-                            tradedQuantity = 0,
+BTC_USDT = StockStartModel(  stockCode = "BTC",
+                            operationCode = "BTCUSDT",
+                            tradedQuantity = 0.01,
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
                             candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE, tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS, acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE, fallBackActivated= FALLBACK_ACTIVATED, takeProfitAtPercentage=TP_AT_PERCENTAGE, takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE)
 
-BTC_USDT = StockStartModel(  stockCode = "BTC",
+BTC_USDC = StockStartModel(  stockCode = "BTC",
                             operationCode = "BTCBRL",
                             tradedQuantity = 0.001,
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
@@ -111,7 +120,7 @@ BTC_USDT = StockStartModel(  stockCode = "BTC",
 
 
 # ⤵️ Array que DEVE CONTER as moedas que serão negociadas
-stocks_traded_list = [BTC_USDT]
+stocks_traded_list = [XRP_USDT]
 
 THREAD_LOCK = True # True = Executa 1 moeda por vez | False = Executa todas simultânemaente
 

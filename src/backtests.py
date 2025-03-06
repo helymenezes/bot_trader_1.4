@@ -7,6 +7,8 @@ from strategies.moving_average import getMovingAverageTradeStrategy
 from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
+from strategies.ema_macd_strategy import getEMAMACDTradeStrategy
+from strategies.emamacd import getemaMacd
 
 # ------------------------------------------------------------------------
 # 🔎 AJUSTES BACKTESTS 🔎
@@ -22,7 +24,7 @@ CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR
 
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
 
-CLANDES_RODADOS = 7 * 24
+CLANDES_RODADOS = 7 * 24  # 12 dias de 24 horas
 
 # ------------------------------------------------------------------------
 # ⏬ SELEÇÃO DE ESTRATÉGIAS ⏬
@@ -105,5 +107,30 @@ backtestRunner(
     verbose=False,
 )
 
+print(f"\n{STOCK_CODE} - EMA + MACD - {str(CANDLE_PERIOD)}")
+backtestRunner(
+    stock_data=devTrader.stock_data,
+    strategy_function=getEMAMACDTradeStrategy,
+    periods=CLANDES_RODADOS,
+    initial_balance=INITIAL_BALANCE,
+    ema_fast_period=9,
+    ema_slow_period=1,
+    macd_fast_period=12,
+    macd_slow_period=26,
+    signal_window=9,
+    verbose=False,
+)
+
+print(f"\n{STOCK_CODE} - ema_macd_2 - {str(CANDLE_PERIOD)}")
+backtestRunner(
+    stock_data=devTrader.stock_data,
+    strategy_function=getemaMacd,
+    periods=CLANDES_RODADOS,
+    initial_balance=INITIAL_BALANCE,
+    fast_ema=9,
+    slow_ema=1,
+    signal_period=9,
+    verbose=False,
+)
 
 print("\n\n")

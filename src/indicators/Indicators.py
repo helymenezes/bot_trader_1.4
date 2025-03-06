@@ -3,6 +3,7 @@ from .rsi import rsi
 from .macd import macd
 from .vortex import vortex
 from .atr import atr
+from .ema import ema
 
 
 class Indicators:
@@ -21,3 +22,7 @@ class Indicators:
     @staticmethod
     def getAtr(series, window=14):
         return atr(series, window)
+    
+    @staticmethod
+    def getema(series, fast_window=7, slow_window= 25, long_window= 99):
+        return ema(series, fast_window, slow_window, long_window)
