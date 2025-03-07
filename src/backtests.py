@@ -16,8 +16,8 @@ from strategies.fvg_strategies import getFVGTradeStrategy
 # ------------------------------------------------------------------------
 # 🔎 AJUSTES BACKTESTS 🔎
 
-STOCK_CODE = "BERA"  # Código da Criptomoeda
-OPERATION_CODE = "BERAUSDT"  # Código da operação (cripto + moeda)
+STOCK_CODE = "XRP"  # Código da Criptomoeda
+OPERATION_CODE = "XRPUSDT"  # Código da operação (cripto + moeda)
 INITIAL_BALANCE = 1000  # Valor de investimento inicial em USDT ou BRL
 
 # ----------------------------------------

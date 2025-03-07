@@ -15,13 +15,14 @@ logging.basicConfig(
 from strategies.moving_average_antecipation import getMovingAverageAntecipationTradeStrategy
 from strategies.moving_average import getMovingAverageTradeStrategy
 
-# from strategies.vortex_strategy import getVortexTradeStrategy
+
 from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 from strategies.ema_macd_strategy import getEMAMACDTradeStrategy
 from strategies.ichimoku_strategy import ichimoku_trade_strategy
 from strategies.bollinger_rsi_strategy import bollinger_rsi_strategy
+from strategies.fvg_strategies import getFVGTradeStrategy
 
 # fmt: off
 # -------------------------------------------------------------------------------------------------
@@ -66,21 +67,24 @@ from strategies.bollinger_rsi_strategy import bollinger_rsi_strategy
 # MAIN_STRATEGY = getRsiTradeStrategy
 # MAIN_STRATEGY_ARGS = {}
 
-MAIN_STRATEGY = bollinger_rsi_strategy
-MAIN_STRATEGY_ARGS = {
-                        "bollinger_window":20, 
-                         "bollinger_std":2, 
-                         "rsi_window":14, 
-                         "rsi_oversold":30, 
-                         "rsi_overbought":70,
-                         }
+# MAIN_STRATEGY = bollinger_rsi_strategy
+# MAIN_STRATEGY_ARGS = {
+#                         "bollinger_window":20, 
+#                          "bollinger_std":2, 
+#                          "rsi_window":14, 
+#                          "rsi_oversold":30, 
+#                          "rsi_overbought":70,
+#                          }
+
+MAIN_STRATEGY = getFVGTradeStrategy
+MAIN_STRATEGY_ARGS = {}
 
 # -----------------
 
 # 🥈 ESTRATÉGIA DE FALLBACK (reserva) 🥈
 
-FALLBACK_ACTIVATED = False     
-FALLBACK_STRATEGY = getVortexTradeStrategy
+FALLBACK_ACTIVATED = True     
+FALLBACK_STRATEGY = getMovingAverageRSIVolumeStrategy
 FALLBACK_STRATEGY_ARGS = {}
 
 # ------------------------------------------------------------------
@@ -101,7 +105,7 @@ TP_AMOUNT_PERCENTAGE =  [50, 50, 100]   # Vende [A%, B%]
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR # Périodo do candle análisado
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE # Périodo do candle análisado
 
-TEMPO_ENTRE_TRADES          = 15 * 30            # Tempo que o bot espera para verificar o mercado (em segundos)
+TEMPO_ENTRE_TRADES          = 15 * 60            # Tempo que o bot espera para verificar o mercado (em segundos)
 DELAY_ENTRE_ORDENS          = 60 * 60           # Tempo que o bot espera depois de realizar uma ordem de compra ou venda (ajuda a diminuir trades de borda)
 
 
@@ -110,7 +114,7 @@ DELAY_ENTRE_ORDENS          = 60 * 60           # Tempo que o bot espera depois 
 
 XRP_USDT = StockStartModel(  stockCode = "XRP",
                             operationCode = "XRPUSDT",
-                            tradedQuantity = 15,
+                            tradedQuantity = 0,
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
                             candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE, tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS, acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE, fallBackActivated= FALLBACK_ACTIVATED, takeProfitAtPercentage=TP_AT_PERCENTAGE, takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE)
 
