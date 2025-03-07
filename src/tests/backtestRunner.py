@@ -1,6 +1,4 @@
-import numpy as np
 import pandas as pd
-
 
 def backtestRunner(
     stock_data: pd.DataFrame, strategy_function, strategy_instance=None, periods=900, initial_balance=1000, **strategy_kwargs
@@ -20,6 +18,18 @@ def backtestRunner(
     :param strategy_kwargs: Parâmetros adicionais para a estratégia.
     :return: Exibe estatísticas do backtest.
     """
+    # Verifica se o DataFrame tem os dados necessários
+    required_columns = ['close_price']
+    if not all(col in stock_data.columns for col in required_columns):
+        raise ValueError(f"DataFrame deve conter as colunas: {required_columns}")
+    
+    if stock_data.empty:
+        raise ValueError("DataFrame está vazio")
+        
+    if stock_data['close_price'].isnull().any():
+        print("⚠️ Aviso: Existem valores nulos na coluna close_price")
+        stock_data = stock_data.dropna(subset=['close_price'])
+
     # 🔹 Ajuste para garantir que há dados suficientes para calcular médias móveis corretamente
     min_required_periods = strategy_kwargs.get("slow_window", 40) + 20  # Adicionamos um buffer extra
     stock_data = stock_data[-max(periods, min_required_periods) :].copy().reset_index(drop=True)
@@ -39,13 +49,17 @@ def backtestRunner(
 
     # Loop sobre cada período no dataset
     for i in range(1, len(stock_data)):
-        current_data = stock_data.iloc[: i + 1]
+        current_data = stock_data.iloc[: i + 1].copy()  # Usar .copy() para evitar SettingWithCopyWarning
 
-        # Se a função precisa de um objeto (ex: `self`), passamos a instância do bot
-        if strategy_instance:
-            signal = strategy_function(strategy_instance)
-        else:
-            signal = strategy_function(current_data, **strategy_kwargs)
+        try:
+            # Se a função precisa de um objeto (ex: `self`), passamos a instância do bot
+            if strategy_instance:
+                signal = strategy_function(strategy_instance)
+            else:
+                signal = strategy_function(current_data, **strategy_kwargs)
+        except Exception as e:
+            print(f"⚠️ Erro ao executar estratégia: {str(e)}")
+            continue
 
         # Se o sinal for `None`, pulamos para evitar erros
         if signal is None:

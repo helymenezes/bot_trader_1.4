@@ -20,6 +20,9 @@ from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 from strategies.ema_macd_strategy import getEMAMACDTradeStrategy
+from strategies.ichimoku_strategy import ichimoku_trade_strategy
+from strategies.bollinger_rsi_strategy import bollinger_rsi_strategy
+
 # fmt: off
 # -------------------------------------------------------------------------------------------------
 # 🟢🟢🟢 CONFIGURAÇÕES - PODEM ALTERAR - INICIO 🟢🟢🟢
@@ -34,17 +37,19 @@ from strategies.ema_macd_strategy import getEMAMACDTradeStrategy
 #                       "fast_window": 7,
 #                       "slow_window": 21}
 
-MAIN_STRATEGY = getEMAMACDTradeStrategy
-MAIN_STRATEGY_ARGS = {
-    "verbose": False,
-    "ema_fast_period": 7,
-    "ema_slow_period": 25,
-    "macd_fast_period": 12,
-    "macd_slow_period": 26,
-    "signal_window": 9,
-    "long_window": 99
-}
+# MAIN_STRATEGY = getEMAMACDTradeStrategy
+# MAIN_STRATEGY_ARGS = {
+#     "verbose": False,
+#     "ema_fast_period": 7,
+#     "ema_slow_period": 25,
+#     "macd_fast_period": 12,
+#     "macd_slow_period": 26,
+#     "signal_window": 9,
+#     "long_window": 99
+# }
 
+# MAIN_STRATEGY = ichimoku_trade_strategy
+# MAIN_STRATEGY_ARGS = {}
 
 # MAIN_STRATEGY = getVortexTradeStrategy
 # MAIN_STRATEGY_ARGS = {}
@@ -61,11 +66,20 @@ MAIN_STRATEGY_ARGS = {
 # MAIN_STRATEGY = getRsiTradeStrategy
 # MAIN_STRATEGY_ARGS = {}
 
+MAIN_STRATEGY = bollinger_rsi_strategy
+MAIN_STRATEGY_ARGS = {
+                        "bollinger_window":20, 
+                         "bollinger_std":2, 
+                         "rsi_window":14, 
+                         "rsi_oversold":30, 
+                         "rsi_overbought":70,
+                         }
+
 # -----------------
 
 # 🥈 ESTRATÉGIA DE FALLBACK (reserva) 🥈
 
-FALLBACK_ACTIVATED  = True      
+FALLBACK_ACTIVATED = False     
 FALLBACK_STRATEGY = getVortexTradeStrategy
 FALLBACK_STRATEGY_ARGS = {}
 
@@ -96,7 +110,7 @@ DELAY_ENTRE_ORDENS          = 60 * 60           # Tempo que o bot espera depois 
 
 XRP_USDT = StockStartModel(  stockCode = "XRP",
                             operationCode = "XRPUSDT",
-                            tradedQuantity = 0,
+                            tradedQuantity = 15,
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
                             candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE, tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS, acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE, fallBackActivated= FALLBACK_ACTIVATED, takeProfitAtPercentage=TP_AT_PERCENTAGE, takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE)
 

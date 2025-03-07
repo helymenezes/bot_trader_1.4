@@ -8,13 +8,16 @@ from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 from strategies.ema_macd_strategy import getEMAMACDTradeStrategy
-from strategies.emamacd import getemaMacd
+from strategies.ichimoku_strategy import ichimoku_trade_strategy
+from strategies.bollinger_rsi_strategy import bollinger_rsi_strategy
+from strategies.fvg_strategies import getFVGTradeStrategy
+
 
 # ------------------------------------------------------------------------
 # 🔎 AJUSTES BACKTESTS 🔎
 
-STOCK_CODE = "BTC"  # Código da Criptomoeda
-OPERATION_CODE = "BTCUSDT"  # Código da operação (cripto + moeda)
+STOCK_CODE = "BERA"  # Código da Criptomoeda
+OPERATION_CODE = "BERAUSDT"  # Código da operação (cripto + moeda)
 INITIAL_BALANCE = 1000  # Valor de investimento inicial em USDT ou BRL
 
 # ----------------------------------------
@@ -24,7 +27,7 @@ CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR
 
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
 
-CLANDES_RODADOS = 7 * 24  # 12 dias de 24 horas
+CLANDES_RODADOS = 7 * 24  #  dias de 24 horas
 
 # ------------------------------------------------------------------------
 # ⏬ SELEÇÃO DE ESTRATÉGIAS ⏬
@@ -113,24 +116,42 @@ backtestRunner(
     strategy_function=getEMAMACDTradeStrategy,
     periods=CLANDES_RODADOS,
     initial_balance=INITIAL_BALANCE,
-    ema_fast_period=9,
-    ema_slow_period=1,
+    ema_fast_period=7,  # Changed from 9 to 7 to match default
+    ema_slow_period=21,  # Changed from 1 to 21 - more reasonable value
     macd_fast_period=12,
     macd_slow_period=26,
     signal_window=9,
     verbose=False,
 )
 
-print(f"\n{STOCK_CODE} - ema_macd_2 - {str(CANDLE_PERIOD)}")
+
+print(f"\n{STOCK_CODE} - Ichimoku - {str(CANDLE_PERIOD)}")
 backtestRunner(
     stock_data=devTrader.stock_data,
-    strategy_function=getemaMacd,
+    strategy_function=ichimoku_trade_strategy,
     periods=CLANDES_RODADOS,
     initial_balance=INITIAL_BALANCE,
-    fast_ema=9,
-    slow_ema=1,
-    signal_period=9,
     verbose=False,
 )
+
+print(f"\n{STOCK_CODE} - Bollinger RSI - {str(CANDLE_PERIOD)}")
+backtestRunner(
+    stock_data=devTrader.stock_data,
+    strategy_function=bollinger_rsi_strategy,
+    periods=CLANDES_RODADOS,
+    initial_balance=INITIAL_BALANCE,
+    verbose=False,
+)
+
+print(f"\n{STOCK_CODE} - FVG - {str(CANDLE_PERIOD)}")
+backtestRunner(
+    stock_data=devTrader.stock_data,
+    strategy_function=getFVGTradeStrategy,
+    periods=CLANDES_RODADOS,
+    initial_balance=INITIAL_BALANCE,
+    verbose=False,
+)
+
+
 
 print("\n\n")

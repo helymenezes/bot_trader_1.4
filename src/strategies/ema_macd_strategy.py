@@ -4,7 +4,7 @@ from indicators import Indicators
 def getEMAMACDTradeStrategy(stock_data: pd.DataFrame, 
                              verbose: bool = True, 
                              ema_fast_period: int = 7, 
-                             ema_slow_period: int = 25, 
+                             ema_slow_period: int = 21, 
                              macd_fast_period: int = 12, 
                              macd_slow_period: int = 26, 
                              signal_window: int = 9,
@@ -34,18 +34,33 @@ def getEMAMACDTradeStrategy(stock_data: pd.DataFrame,
             print("⚠️ Coluna 'close_price' não encontrada em stock_data.")
         return None
 
+    # Verifica se há dados suficientes
+    min_periods = max(ema_fast_period, ema_slow_period, macd_slow_period, long_window)
+    if len(df) < min_periods:
+        if verbose:
+            print("⚠️ Dados insuficientes para análise.")
+        return None
+
     # Calcula as EMAs usando a função getema do módulo Indicators
     # Assume-se que a função retorne um DataFrame com colunas 'EMA_fast' e 'EMA_slow'
     fast_ema, slow_ema, long_ema = Indicators.getema(df['close_price'], fast_window=ema_fast_period, 
                                slow_window=ema_slow_period, long_window=long_window)
-    df['EMA_fast'] = fast_ema
-    df['EMA_slow'] = slow_ema
-    df['EMA_long'] = long_ema
-
+    
     # Calcula o MACD usando a função getMACD do módulo Indicators
     # Assume-se que a função retorne um DataFrame com colunas 'MACD' e 'Signal_Line'
     macd, signal_line, histogram = Indicators.getMACD(df['close_price'], fast_window=macd_fast_period, 
                                  slow_window=macd_slow_period, signal_window=signal_window)
+    
+    # Verifica se algum indicador retornou None
+    if any(x is None for x in [fast_ema, slow_ema, long_ema, macd, signal_line, histogram]):
+        if verbose:
+            print("⚠️ Erro no cálculo dos indicadores.")
+        return None
+
+    # Adiciona os indicadores ao DataFrame
+    df['EMA_fast'] = fast_ema
+    df['EMA_slow'] = slow_ema
+    df['EMA_long'] = long_ema
     df['MACD'] = macd
     df['Signal_Line'] = signal_line
     df['MACD_Histogram'] = histogram
