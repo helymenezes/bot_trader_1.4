@@ -19,25 +19,40 @@ O ATR é obtido ao calcular a média móvel do True Range ao longo de um períod
 def atr(data: pd.DataFrame, window=14):
     """
     Calcula o Average True Range (ATR) de um DataFrame contendo preços OHLC.
-
-    :param data: pd.DataFrame com colunas ['high', 'low', 'close']
-    :param window: Período para calcular a média do ATR (default = 14)
-    :return: Série Pandas com o ATR calculado
     """
+    try:
+        # Verificar se as colunas necessárias existem
+        required_columns = ['high', 'low', 'close']
+        if not all(col in data.columns for col in required_columns):
+            return None
 
-    high = data["high"]
-    low = data["low"]
-    close = data["close"]
+        # Copiar dados para evitar modificar o original
+        df = data[required_columns].copy()
+        
+        # Remover valores nulos
+        df.dropna(inplace=True)
+        
+        # Verificar se há dados suficientes
+        if len(df) < window:
+            return None
 
-    # Cálculo do True Range (TR)
-    tr1 = high - low
-    tr2 = np.abs(high - close.shift(1))
-    tr3 = np.abs(low - close.shift(1))
+        # Cálculo do True Range (TR)
+        tr1 = df["high"] - df["low"]
+        tr2 = np.abs(df["high"] - df["close"].shift(1))
+        tr3 = np.abs(df["low"] - df["close"].shift(1))
 
-    # True Range é o maior valor entre os três cálculos acima
-    true_range = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+        # True Range é o maior valor entre os três cálculos
+        true_range = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
 
-    # ATR é a média móvel do True Range
-    atr_values = true_range.rolling(window=window).mean()
+        # ATR é a média móvel do True Range
+        atr_values = true_range.rolling(window=window).mean()
 
-    return atr_values
+        # Verificar se o cálculo foi bem sucedido
+        if atr_values is None or atr_values.empty or atr_values.isna().all():
+            return None
+
+        return atr_values
+
+    except Exception as e:
+        print(f"Erro ao calcular ATR: {str(e)}")
+        return None

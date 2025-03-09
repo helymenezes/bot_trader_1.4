@@ -11,13 +11,15 @@ from strategies.ema_macd_strategy import getEMAMACDTradeStrategy
 from strategies.ichimoku_strategy import ichimoku_trade_strategy
 from strategies.bollinger_rsi_strategy import bollinger_rsi_strategy
 from strategies.fvg_strategies import getFVGTradeStrategy
+from strategies.ma_rsi_atr_strategy import getMovingAverageRSIVolumeStrategy
+from strategies.vortex_rsi_vol import getVortexEmaRsiTradeStrategy
 
 
 # ------------------------------------------------------------------------
 # 🔎 AJUSTES BACKTESTS 🔎
 
-STOCK_CODE = "XRP"  # Código da Criptomoeda
-OPERATION_CODE = "XRPUSDT"  # Código da operação (cripto + moeda)
+STOCK_CODE = "ETH"  # Código da Criptomoeda
+OPERATION_CODE = "ETHUSDT"  # Código da operação (cripto + moeda)
 INITIAL_BALANCE = 1000  # Valor de investimento inicial em USDT ou BRL
 
 # ----------------------------------------
@@ -27,7 +29,7 @@ CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR
 
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
 
-CLANDES_RODADOS = 7 * 24  #  dias de 24 horas
+CLANDES_RODADOS = 31 * 24  #  dias de 24 horas
 
 # ------------------------------------------------------------------------
 # ⏬ SELEÇÃO DE ESTRATÉGIAS ⏬
@@ -152,6 +154,32 @@ backtestRunner(
     verbose=False,
 )
 
+print(f"\n{STOCK_CODE} - MA RSI ATR - {str(CANDLE_PERIOD)}")
+backtestRunner(
+    stock_data=devTrader.stock_data,
+    strategy_function=getMovingAverageRSIVolumeStrategy,
+    periods=CLANDES_RODADOS,
+    initial_balance=INITIAL_BALANCE,
+    fast_window=9,
+    slow_window=21,
+    rsi_window=14,
+    rsi_overbought=70,
+    rsi_oversold=30,
+    volume_multiplier=1.5,
+    price_action_confirmation=True,
+    trend_confirmation_periods=3,
+    exit_rsi_buffer=5,
+    trailing_stop_atr_factor=2.0,
+    atr_period=14,
+    verbose=False,
+)
 
-
+print(f"\n{STOCK_CODE} - Vortex EMA RSI - {str(CANDLE_PERIOD)}")
+backtestRunner(
+    stock_data=devTrader.stock_data,
+    strategy_function=getVortexEmaRsiTradeStrategy,
+    periods=CLANDES_RODADOS,
+    initial_balance=INITIAL_BALANCE,
+    verbose=False,
+)
 print("\n\n")

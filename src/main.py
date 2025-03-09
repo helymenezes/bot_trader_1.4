@@ -23,6 +23,7 @@ from strategies.ema_macd_strategy import getEMAMACDTradeStrategy
 from strategies.ichimoku_strategy import ichimoku_trade_strategy
 from strategies.bollinger_rsi_strategy import bollinger_rsi_strategy
 from strategies.fvg_strategies import getFVGTradeStrategy
+from strategies.ma_rsi_atr_strategy import getMovingAverageRSIVolumeStrategy
 
 # fmt: off
 # -------------------------------------------------------------------------------------------------
@@ -56,8 +57,8 @@ from strategies.fvg_strategies import getFVGTradeStrategy
 # MAIN_STRATEGY_ARGS = {}
 
 # MAIN_STRATEGY = getMovingAverageRSIVolumeStrategy
-# MAIN_STRATEGY_ARGS = {  "fast_window":  9,
-#                         "slow_window":  21,
+# MAIN_STRATEGY_ARGS = {  "fast_window":  7,
+#                         "slow_window":  40,
 #                         "rsi_window":  14,
 #                         "rsi_overbought":  70,
 #                         "rsi_oversold":  30,
@@ -76,7 +77,10 @@ from strategies.fvg_strategies import getFVGTradeStrategy
 #                          "rsi_overbought":70,
 #                          }
 
-MAIN_STRATEGY = getFVGTradeStrategy
+# MAIN_STRATEGY = getFVGTradeStrategy
+# MAIN_STRATEGY_ARGS = {}
+
+MAIN_STRATEGY = getMovingAverageRSIVolumeStrategy
 MAIN_STRATEGY_ARGS = {}
 
 # -----------------
@@ -105,7 +109,7 @@ TP_AMOUNT_PERCENTAGE =  [50, 50, 100]   # Vende [A%, B%]
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR # Périodo do candle análisado
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE # Périodo do candle análisado
 
-TEMPO_ENTRE_TRADES          = 15 * 60            # Tempo que o bot espera para verificar o mercado (em segundos)
+TEMPO_ENTRE_TRADES          = 30 * 60           # Tempo que o bot espera para verificar o mercado (em segundos)
 DELAY_ENTRE_ORDENS          = 60 * 60           # Tempo que o bot espera depois de realizar uma ordem de compra ou venda (ajuda a diminuir trades de borda)
 
 
@@ -120,25 +124,25 @@ XRP_USDT = StockStartModel(  stockCode = "XRP",
 
 SOL_USDT = StockStartModel(  stockCode = "SOL",
                             operationCode = "SOLUSDT",
-                            tradedQuantity = 0.1,
+                            tradedQuantity = 0,
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
                             candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE, tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS, acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE, fallBackActivated= FALLBACK_ACTIVATED, takeProfitAtPercentage=TP_AT_PERCENTAGE, takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE)
 
 BTC_USDT = StockStartModel(  stockCode = "BTC",
                             operationCode = "BTCUSDT",
-                            tradedQuantity = 0.01,
+                            tradedQuantity = 0,
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
                             candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE, tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS, acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE, fallBackActivated= FALLBACK_ACTIVATED, takeProfitAtPercentage=TP_AT_PERCENTAGE, takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE)
 
-BTC_USDC = StockStartModel(  stockCode = "BTC",
-                            operationCode = "BTCBRL",
-                            tradedQuantity = 0.001,
+ETH_USDC = StockStartModel(  stockCode = "ETH",
+                            operationCode = "ETHUSDC",
+                            tradedQuantity = 0,
                             mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS, fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
                             candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE, tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS, acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE, fallBackActivated= FALLBACK_ACTIVATED, takeProfitAtPercentage=TP_AT_PERCENTAGE, takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE)
 
 
 # ⤵️ Array que DEVE CONTER as moedas que serão negociadas
-stocks_traded_list = [XRP_USDT]
+stocks_traded_list = [BTC_USDT, XRP_USDT, SOL_USDT, ETH_USDC]
 
 THREAD_LOCK = True # True = Executa 1 moeda por vez | False = Executa todas simultânemaente
 
