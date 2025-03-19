@@ -3,6 +3,7 @@ from .rsi import rsi
 from .macd import macd
 from .vortex import vortex
 from .atr import atr
+from .t3 import t3MovingAverage
 
 
 class Indicators:
@@ -21,3 +22,6 @@ class Indicators:
     @staticmethod
     def getAtr(series, window=14):
         return atr(series, window)
+    @staticmethod
+    def getT3(series, window=14, volume_factor=0.7):
+        return t3MovingAverage(series, window, volume_factor)

@@ -20,6 +20,7 @@ from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 from strategies.ton_strategy_v3 import getAdvancedTradeStrategy_v3
+from strategies.t3_strategy import getT3MATradeStrategy
 
 # fmt: off
 # -------------------------------------------------------------------------------------------------
@@ -53,16 +54,23 @@ from strategies.ton_strategy_v3 import getAdvancedTradeStrategy_v3
 # MAIN_STRATEGY = getRsiTradeStrategy
 # MAIN_STRATEGY_ARGS = {}
 
-MAIN_STRATEGY = getAdvancedTradeStrategy_v3
-MAIN_STRATEGY_ARGS = {  "m7_period": 7,
-                        "m200_period": 200,
-                        "m50_period": 50,
-                        "rsi_period": 14,
-                        "slowK_window": 14,
-                        "slow_stochastic_smoothing_window": 3,
-                        "vortex_window": 14,
-                        "verbose": False,
-                        "print_mode": "custom"
+# MAIN_STRATEGY = getAdvancedTradeStrategy_v3
+# MAIN_STRATEGY_ARGS = {  "m7_period": 7,
+#                         "m200_period": 200,
+#                         "m50_period": 50,
+#                         "rsi_period": 14,
+#                         "slowK_window": 14,
+#                         "slow_stochastic_smoothing_window": 3,
+#                         "vortex_window": 14,
+#                         "verbose": False,
+#                         "print_mode": "custom"
+#                         }
+
+MAIN_STRATEGY = getT3MATradeStrategy
+MAIN_STRATEGY_ARGS = {  "fast_period": 7,
+                        "slow_period": 40,
+                        "volume_factor": 0.7,
+                        "verbose": False
                         }
 
 # -----------------
